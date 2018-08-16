@@ -278,7 +278,14 @@ class UserViewSet(UserCreateView, viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['create', 'confirm']:
             self.permission_classes = [permissions.AllowAny]
-        elif self.action == 'list':
+        elif self.action == 'me':
+            # keep standard permissions
+            # self.permission_classes = [permissions.IsAuthenticated]
+            pass
+        else:
+            # Ensure list and retrieve actions require admin access
+            # Note: this prevents users accessing their own record via /users/{pk}/
+            # They must use /users/me/
             self.permission_classes = [permissions.IsAdminUser]
         return super(UserViewSet, self).get_permissions()
 
